@@ -26,7 +26,7 @@ public class PacienteTest {
         do {
             System.out.println("1- Testar o cadastro e persistencia\n" +
                     "2- Testar findAll\n" +
-                    "0- Sair");
+                    "3- Testar remove\n");
             opcao = Integer.parseInt(scanner.nextLine());
             switch (opcao) {
                 case 1:
@@ -41,6 +41,10 @@ public class PacienteTest {
 //            		}
                 	exibirPacientes(pacientes);
                     break;
+                case 3:
+                	System.out.println("qual o id?");
+                	int Id = Integer.parseInt(scanner.nextLine());
+                	dao.remove(Id);
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -53,41 +57,35 @@ public class PacienteTest {
 	}
 	
 	public static void exibirPacientes(List<Paciente> pacientes) {
+
 		SwingUtilities.invokeLater(() -> {
+		    JFrame frame = new JFrame("Dados do Paciente");
+		    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            JFrame frame = new JFrame("Dados do Paciente");
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            JPanel panel = new JPanel();
-            
-            panel.setLayout(new GridLayout(3, 2));
-            panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); 
-            frame.getContentPane().add(panel);
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-            
-            for (Paciente paciente : pacientes) {
+		    JPanel panel = new JPanel(new BorderLayout());
+		    panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-                JPanel pacientePanel = new JPanel();
-                pacientePanel.setLayout(new GridLayout(2, 2)); 
-    
-                JLabel nameLabel = new JLabel("Nome: " + paciente.getNome());
-                JLabel comorLabel = new JLabel("Comorbidade: " + paciente.getComorbidade());
-                
-    
-                pacientePanel.add(nameLabel);
-               
-                pacientePanel.add(comorLabel);
-        
-    
-                panel.add(pacientePanel);
-    
-        
-                panel.add(Box.createVerticalStrut(20));
+		    String[] colunas = {"Nome", "Comorbidade"};
+		    Object[][] dados = new Object[pacientes.size()][2];
 
-            }
-	 });
+		    int rowIndex = 0;
+		    for (Paciente paciente : pacientes) {
+		        dados[rowIndex][0] = paciente.getNome();
+		        dados[rowIndex][1] = paciente.getComorbidade();
+		        rowIndex++;
+		    }
+
+		    JTable table = new JTable(dados, colunas);
+		    JScrollPane scrollPane = new JScrollPane(table);
+
+		    panel.add(scrollPane, BorderLayout.CENTER);
+
+		    frame.getContentPane().add(panel);
+		    frame.pack();
+		    frame.setLocationRelativeTo(null);
+		    frame.setVisible(true);
+		});
+
 
 	}
 	
